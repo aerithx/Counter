@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:Counter"
+    x:Class="Counter.MainPage"
+    Title="Counter">
+
+    <Grid Padding="15"
+          RowDefinitions="Auto,Auto,Auto,*"
+          RowSpacing="10">
+
+        <Border Grid.Row="0"
+                x:Name="StalyBorder"
+                Padding="10">
+
+            <VerticalStackLayout Spacing="8">
+
+                <Label Text="Stały licznik"
+                       FontSize="22"
+                       TextColor="Black" />
+
+                <Label x:Name="StalyWartoscLabel"
+                       Text="0"
+                       FontSize="30"
+                       TextColor="Black"
+                       HorizontalOptions="Center" />
+
+                <HorizontalStackLayout
+                    Spacing="10"
+                    HorizontalOptions="Center">
+
+                    <Button Text="−"
+                            Clicked="StalyMinus_Clicked" />
+
+                    <Button Text="+"
+                            Clicked="StalyPlus_Clicked" />
+
+                    <Button Text="Reset"
+                            Clicked="StalyReset_Clicked" />
+
+                </HorizontalStackLayout>
+
+                <Picker x:Name="StalyKolorPicker"
+                        Title="Kolor stałego licznika"
+                        TextColor="Black"
+                        SelectedIndexChanged="StalyKolor_Changed">
+
+                    <Picker.Items>
+                        <x:String>Niebieski</x:String>
+                        <x:String>Zielony</x:String>
+                        <x:String>Żółty</x:String>
+                        <x:String>Różowy</x:String>
+                    </Picker.Items>
+                </Picker>
+
+            </VerticalStackLayout>
+        </Border>
+
+        <VerticalStackLayout Grid.Row="1" Spacing="5">
+
+            <Entry x:Name="NazwaEntry"
+                   Placeholder="Nazwa nowego licznika" />
+
+            <Entry x:Name="PoczatkowaEntry"
+                   Placeholder="Wartość początkowa"
+                   Text="0"
+                   Keyboard="Numeric" />
+
+            <Picker x:Name="KolorPicker"
+                    Title="Kolor nowego licznika"
+                    SelectedIndex="0">
+
+                <Picker.Items>
+                    <x:String>Niebieski</x:String>
+                    <x:String>Zielony</x:String>
+                    <x:String>Żółty</x:String>
+                    <x:String>Różowy</x:String>
+                </Picker.Items>
+            </Picker>
+
+            <HorizontalStackLayout Spacing="10">
+
+                <Button Text="Dodaj"
+                        Clicked="Dodaj_Clicked" />
+
+                <Button Text="Zapisz"
+                        Clicked="Zapisz_Clicked" />
+
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+
+        <Label Grid.Row="2"
+               x:Name="KomunikatLabel" />
+
+        <CollectionView Grid.Row="3"
+                        x:Name="ListaLicznikow"
+                        SelectionMode="None">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="local:Licznik">
+
+                    <Border BackgroundColor="{Binding Tlo}"
+                            Padding="10"
+                            Margin="0,0,0,10">
+
+                        <VerticalStackLayout Spacing="8">
+
+                            <Label Text="{Binding Nazwa}"
+                                   FontSize="22"
+                                   TextColor="Black" />
+
+                            <Label Text="{Binding Wartosc}"
+                                   FontSize="30"
+                                   TextColor="Black"
+                                   HorizontalOptions="Center" />
+
+                            <HorizontalStackLayout
+                                Spacing="8"
+                                HorizontalOptions="Center">
+
+                                <Button Text="−"
+                                        Clicked="Minus_Clicked" />
+
+                                <Button Text="+"
+                                        Clicked="Plus_Clicked" />
+
+                                <Button Text="Reset"
+                                        Clicked="Reset_Clicked" />
+
+                                <Button Text="Usuń"
+                                        Clicked="Usun_Clicked" />
+
+                            </HorizontalStackLayout>
+
+                        </VerticalStackLayout>
+                    </Border>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>
