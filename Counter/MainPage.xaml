@@ -11,7 +11,7 @@
           RowSpacing="10">
 
         <Border Grid.Row="0"
-                x:Name="StalyBorder"
+                x:Name="MainBorder"
                 Padding="10">
 
             <VerticalStackLayout Spacing="8">
@@ -20,7 +20,7 @@
                        FontSize="22"
                        TextColor="Black" />
 
-                <Label x:Name="StalyWartoscLabel"
+                <Label x:Name="MainValueLabel"
                        Text="0"
                        FontSize="30"
                        TextColor="Black"
@@ -31,20 +31,20 @@
                     HorizontalOptions="Center">
 
                     <Button Text="−"
-                            Clicked="StalyMinus_Clicked" />
+                            Clicked="MainMinus_Clicked" />
 
                     <Button Text="+"
-                            Clicked="StalyPlus_Clicked" />
+                            Clicked="MainPlus_Clicked" />
 
                     <Button Text="Reset"
-                            Clicked="StalyReset_Clicked" />
+                            Clicked="MainReset_Clicked" />
 
                 </HorizontalStackLayout>
 
-                <Picker x:Name="StalyKolorPicker"
+                <Picker x:Name="MainColorPicker"
                         Title="Kolor stałego licznika"
                         TextColor="Black"
-                        SelectedIndexChanged="StalyKolor_Changed">
+                        SelectedIndexChanged="MainColor_Changed">
 
                     <Picker.Items>
                         <x:String>Niebieski</x:String>
@@ -59,15 +59,15 @@
 
         <VerticalStackLayout Grid.Row="1" Spacing="5">
 
-            <Entry x:Name="NazwaEntry"
+            <Entry x:Name="NameEntry"
                    Placeholder="Nazwa nowego licznika" />
 
-            <Entry x:Name="PoczatkowaEntry"
+            <Entry x:Name="InitialValueEntry"
                    Placeholder="Wartość początkowa"
                    Text="0"
                    Keyboard="Numeric" />
 
-            <Picker x:Name="KolorPicker"
+            <Picker x:Name="ColorPicker"
                     Title="Kolor nowego licznika"
                     SelectedIndex="0">
 
@@ -82,36 +82,36 @@
             <HorizontalStackLayout Spacing="10">
 
                 <Button Text="Dodaj"
-                        Clicked="Dodaj_Clicked" />
+                        Clicked="Add_Clicked" />
 
                 <Button Text="Zapisz"
-                        Clicked="Zapisz_Clicked" />
+                        Clicked="Save_Clicked" />
 
             </HorizontalStackLayout>
 
         </VerticalStackLayout>
 
         <Label Grid.Row="2"
-               x:Name="KomunikatLabel" />
+               x:Name="MessageLabel" />
 
         <CollectionView Grid.Row="3"
-                        x:Name="ListaLicznikow"
+                        x:Name="CountersList"
                         SelectionMode="None">
 
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="local:Licznik">
+                <DataTemplate x:DataType="local:CounterItem">
 
-                    <Border BackgroundColor="{Binding Tlo}"
+                    <Border BackgroundColor="{Binding Background}"
                             Padding="10"
                             Margin="0,0,0,10">
 
                         <VerticalStackLayout Spacing="8">
 
-                            <Label Text="{Binding Nazwa}"
+                            <Label Text="{Binding Name}"
                                    FontSize="22"
                                    TextColor="Black" />
 
-                            <Label Text="{Binding Wartosc}"
+                            <Label Text="{Binding Value}"
                                    FontSize="30"
                                    TextColor="Black"
                                    HorizontalOptions="Center" />
@@ -130,7 +130,7 @@
                                         Clicked="Reset_Clicked" />
 
                                 <Button Text="Usuń"
-                                        Clicked="Usun_Clicked" />
+                                        Clicked="Delete_Clicked" />
 
                             </HorizontalStackLayout>
 

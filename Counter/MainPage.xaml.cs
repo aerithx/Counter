@@ -8,127 +8,127 @@ namespace Counter
 {
     public partial class MainPage : ContentPage
     {
-        private DaneAplikacji dane = new DaneAplikacji();
+        private AppData appData = new AppData();
 
-        private string sciezka;
+        private string filePath;
 
         public MainPage()
         {
             InitializeComponent();
 
-            sciezka = Path.Combine(
+            filePath = Path.Combine(
                 FileSystem.AppDataDirectory,
-                "counter_dane.xml"
+                "counter_data.xml"
             );
 
-            Wczytaj();
-            Odswiez();
+            LoadData();
+            RefreshUI();
         }
 
-        private void StalyPlus_Clicked(object sender, EventArgs e)
+        private void MainPlus_Clicked(object sender, EventArgs e)
         {
-            if (dane.Staly.Wartosc < int.MaxValue)
+            if (appData.MainCounter.Value < int.MaxValue)
             {
-                dane.Staly.Wartosc = dane.Staly.Wartosc + 1;
+                appData.MainCounter.Value = appData.MainCounter.Value + 1;
 
-                Odswiez();
-                Zapisz();
+                RefreshUI();
+                SaveData();
             }
         }
 
-        private void StalyMinus_Clicked(object sender, EventArgs e)
+        private void MainMinus_Clicked(object sender, EventArgs e)
         {
-            if (dane.Staly.Wartosc > int.MinValue)
+            if (appData.MainCounter.Value > int.MinValue)
             {
-                dane.Staly.Wartosc = dane.Staly.Wartosc - 1;
+                appData.MainCounter.Value = appData.MainCounter.Value - 1;
 
-                Odswiez();
-                Zapisz();
+                RefreshUI();
+                SaveData();
             }
         }
 
-        private void StalyReset_Clicked(object sender, EventArgs e)
+        private void MainReset_Clicked(object sender, EventArgs e)
         {
-            dane.Staly.Wartosc = dane.Staly.Poczatkowa;
+            appData.MainCounter.Value = appData.MainCounter.InitialValue;
 
-            Odswiez();
-            Zapisz();
+            RefreshUI();
+            SaveData();
         }
 
-        private void StalyKolor_Changed(object sender, EventArgs e)
+        private void MainColor_Changed(object sender, EventArgs e)
         {
-            if (StalyKolorPicker.SelectedIndex >= 0)
+            if (MainColorPicker.SelectedIndex >= 0)
             {
-                dane.Staly.Kolor =
-                    PobierzKolor(StalyKolorPicker.SelectedIndex);
+                appData.MainCounter.ColorCode =
+                    GetColorCode(MainColorPicker.SelectedIndex);
 
-                Odswiez();
-                Zapisz();
+                RefreshUI();
+                SaveData();
             }
         }
 
-        private void Dodaj_Clicked(object sender, EventArgs e)
+        private void Add_Clicked(object sender, EventArgs e)
         {
-            string nazwa = NazwaEntry.Text;
+            string name = NameEntry.Text;
 
-            if (nazwa == null)
+            if (name == null)
             {
-                KomunikatLabel.Text = "Wpisz nazwę.";
+                MessageLabel.Text = "Wpisz nazwę:";
                 return;
             }
 
-            nazwa = nazwa.Trim();
+            name = name.Trim();
 
-            if (nazwa == "")
+            if (name == "")
             {
-                KomunikatLabel.Text = "Wpisz nazwę.";
+                MessageLabel.Text = "Wpisz nazwę:";
                 return;
             }
 
-            int poczatkowa;
+            int initial;
 
             try
             {
-                poczatkowa = int.Parse(PoczatkowaEntry.Text);
+                initial = int.Parse(InitialValueEntry.Text);
             }
             catch (Exception)
             {
-                KomunikatLabel.Text = "Wpisz liczbę całkowitą.";
+                MessageLabel.Text = "Wpisz liczbę całkowitą:";
                 return;
             }
 
-            Licznik nowy = new Licznik();
+            CounterItem newItem = new CounterItem();
 
-            nowy.Nazwa = nazwa;
-            nowy.Poczatkowa = poczatkowa;
-            nowy.Wartosc = poczatkowa;
-            nowy.Kolor = PobierzKolor(KolorPicker.SelectedIndex);
+            newItem.Name = name;
+            newItem.InitialValue = initial;
+            newItem.Value = initial;
+            newItem.ColorCode = GetColorCode(ColorPicker.SelectedIndex);
 
-            dane.Dodatkowe.Add(nowy);
+            appData.AdditionalCounters.Add(newItem);
 
-            Odswiez();
-            Zapisz();
+            RefreshUI();
+            SaveData();
 
-            NazwaEntry.Text = "";
-            PoczatkowaEntry.Text = "0";
+            NameEntry.Text = "";
+            InitialValueEntry.Text = "0";
         }
 
         private void Plus_Clicked(object sender, EventArgs e)
         {
-            Button przycisk = sender as Button;
+            Button button = sender as Button;
 
-            if (przycisk != null)
+            if (button != null)
             {
-                Licznik licznik = przycisk.BindingContext as Licznik;
+                CounterItem counter = button.BindingContext as CounterItem;
 
-                if (licznik != null)
+                if (counter != null)
                 {
-                    if (licznik.Wartosc < int.MaxValue)
+                    if (counter.Value < int.MaxValue)
                     {
-                        licznik.Wartosc = licznik.Wartosc + 1;
+                        counter.Value = counter.Value + 1;
 
-                        Odswiez();
-                        Zapisz();
+                        RefreshUI();
+                        SaveData();
                     }
                 }
             }
@@ -136,20 +136,20 @@ namespace Counter
 
         private void Minus_Clicked(object sender, EventArgs e)
         {
-            Button przycisk = sender as Button;
+            Button button = sender as Button;
 
-            if (przycisk != null)
+            if (button != null)
             {
-                Licznik licznik = przycisk.BindingContext as Licznik;
+                CounterItem counter = button.BindingContext as CounterItem;
 
-                if (licznik != null)
+                if (counter != null)
                 {
-                    if (licznik.Wartosc > int.MinValue)
+                    if (counter.Value > int.MinValue)
                     {
-                        licznik.Wartosc = licznik.Wartosc - 1;
+                        counter.Value = counter.Value - 1;
 
-                        Odswiez();
-                        Zapisz();
+                        RefreshUI();
+                        SaveData();
                     }
                 }
             }
@@ -157,51 +157,51 @@ namespace Counter
 
         private void Reset_Clicked(object sender, EventArgs e)
         {
-            Button przycisk = sender as Button;
+            Button button = sender as Button;
 
-            if (przycisk != null)
+            if (button != null)
             {
-                Licznik licznik = przycisk.BindingContext as Licznik;
+                CounterItem counter = button.BindingContext as CounterItem;
 
-                if (licznik != null)
+                if (counter != null)
                 {
-                    licznik.Wartosc = licznik.Poczatkowa;
+                    counter.Value = counter.InitialValue;
 
-                    Odswiez();
-                    Zapisz();
+                    RefreshUI();
+                    SaveData();
                 }
             }
         }
 
-        private void Usun_Clicked(object sender, EventArgs e)
+        private void Delete_Clicked(object sender, EventArgs e)
         {
-            Button przycisk = sender as Button;
+            Button button = sender as Button;
 
-            if (przycisk != null)
+            if (button != null)
             {
-                Licznik licznik = przycisk.BindingContext as Licznik;
+                CounterItem counter = button.BindingContext as CounterItem;
 
-                if (licznik != null)
+                if (counter != null)
                 {
-                    dane.Dodatkowe.Remove(licznik);
+                    appData.AdditionalCounters.Remove(counter);
 
-                    Odswiez();
-                    Zapisz();
+                    RefreshUI();
+                    SaveData();
                 }
             }
         }
 
-        private string PobierzKolor(int numer)
+        private string GetColorCode(int index)
         {
-            if (numer == 1)
+            if (index == 1)
             {
                 return "#90EE90";
             }
-            else if (numer == 2)
+            else if (index == 2)
             {
                 return "#FFFF99";
             }
-            else if (numer == 3)
+            else if (index == 3)
             {
                 return "#FFB6C1";
             }
@@ -211,56 +211,56 @@ namespace Counter
             }
         }
 
-        private void Odswiez()
+        private void RefreshUI()
         {
-            StalyWartoscLabel.Text = dane.Staly.Wartosc.ToString();
-            StalyBorder.BackgroundColor = dane.Staly.Tlo;
+            MainValueLabel.Text = appData.MainCounter.Value.ToString();
+            MainBorder.BackgroundColor = appData.MainCounter.Background;
 
-            ListaLicznikow.ItemsSource = null;
-            ListaLicznikow.ItemsSource = dane.Dodatkowe;
+            CountersList.ItemsSource = null;
+            CountersList.ItemsSource = appData.AdditionalCounters;
         }
 
-        private XElement LicznikNaXml(Licznik licznik)
+        private XElement CounterToXml(CounterItem counter)
         {
-            XElement element = new XElement("Licznik");
+            XElement element = new XElement("CounterItem");
 
-            XElement nazwa = new XElement("Nazwa", licznik.Nazwa);
+            XElement name = new XElement("Name", counter.Name);
 
-            XElement wartosc = new XElement("Wartosc", licznik.Wartosc);
+            XElement value = new XElement("Value", counter.Value);
 
-            XElement poczatkowa =
-                new XElement("Poczatkowa", licznik.Poczatkowa);
+            XElement initial =
+                new XElement("InitialValue", counter.InitialValue);
 
-            XElement kolor = new XElement("Kolor", licznik.Kolor);
+            XElement color = new XElement("ColorCode", counter.ColorCode);
 
-            element.Add(nazwa);
-            element.Add(wartosc);
-            element.Add(poczatkowa);
-            element.Add(kolor);
+            element.Add(name);
+            element.Add(value);
+            element.Add(initial);
+            element.Add(color);
 
             return element;
         }
 
-        private Licznik LicznikZXml(XElement element)
+        private CounterItem CounterFromXml(XElement element)
         {
-            Licznik licznik = new Licznik();
+            CounterItem counter = new CounterItem();
 
-            XElement nazwa = element.Element("Nazwa");
-            XElement wartosc = element.Element("Wartosc");
-            XElement poczatkowa = element.Element("Poczatkowa");
-            XElement kolor = element.Element("Kolor");
+            XElement name = element.Element("Name");
+            XElement value = element.Element("Value");
+            XElement initial = element.Element("InitialValue");
+            XElement color = element.Element("ColorCode");
 
-            licznik.Nazwa = nazwa.Value;
-            licznik.Wartosc = int.Parse(wartosc.Value);
-            licznik.Poczatkowa = int.Parse(poczatkowa.Value);
-            licznik.Kolor = kolor.Value;
+            counter.Name = name.Value;
+            counter.Value = int.Parse(value.Value);
+            counter.InitialValue = int.Parse(initial.Value);
+            counter.ColorCode = color.Value;
 
-            return licznik;
+            return counter;
         }
 
-        private void Zapisz_Clicked(object sender, EventArgs e)
+        private void Save_Clicked(object sender, EventArgs e)
         {
-            Zapisz();
+            SaveData();
 
             System.Diagnostics.Process.Start(
                 "explorer.exe",
@@ -268,103 +268,103 @@ namespace Counter
             );
         }
 
-        private void Zapisz()
+        private void SaveData()
         {
             try
             {
-                XDocument dokument = new XDocument();
+                XDocument document = new XDocument();
 
-                XElement counter = new XElement("Counter");
+                XElement root = new XElement("AppData");
 
-                XElement staly = new XElement("Staly");
+                XElement mainGroup = new XElement("MainCounter");
 
-                XElement stalyLicznik = LicznikNaXml(dane.Staly);
+                XElement mainCounter = CounterToXml(appData.MainCounter);
 
-                staly.Add(stalyLicznik);
+                mainGroup.Add(mainCounter);
 
-                XElement dodatkowe = new XElement("Dodatkowe");
+                XElement additionalGroup = new XElement("AdditionalCounters");
 
-                foreach (Licznik licznik in dane.Dodatkowe)
+                foreach (CounterItem counter in appData.AdditionalCounters)
                 {
-                    XElement element = LicznikNaXml(licznik);
+                    XElement element = CounterToXml(counter);
 
-                    dodatkowe.Add(element);
+                    additionalGroup.Add(element);
                 }
 
-                counter.Add(staly);
-                counter.Add(dodatkowe);
+                root.Add(mainGroup);
+                root.Add(additionalGroup);
 
-                dokument.Add(counter);
+                document.Add(root);
 
-                dokument.Save(sciezka);
+                document.Save(filePath);
 
-                KomunikatLabel.Text = "Zapisano do XML.";
+                MessageLabel.Text = "Zapisano do XML.";
             }
             catch (Exception)
             {
-                KomunikatLabel.Text = "Błąd zapisu XML.";
+                MessageLabel.Text = "Błąd zapisu XML.";
             }
         }
 
-        private void Wczytaj()
+        private void LoadData()
         {
-            bool istnieje = File.Exists(sciezka);
+            bool exists = File.Exists(filePath);
 
-            if (istnieje == true)
+            if (exists == true)
             {
                 try
                 {
-                    XDocument dokument = XDocument.Load(sciezka);
+                    XDocument document = XDocument.Load(filePath);
 
-                    XElement counter = dokument.Element("Counter");
+                    XElement root = document.Element("AppData");
 
-                    DaneAplikacji wczytane = new DaneAplikacji();
+                    AppData loadedData = new AppData();
 
-                    XElement staly = counter.Element("Staly");
+                    XElement mainGroup = root.Element("MainCounter");
 
-                    XElement stalyLicznik = staly.Element("Licznik");
+                    XElement mainCounter = mainGroup.Element("CounterItem");
 
-                    wczytane.Staly = LicznikZXml(stalyLicznik);
+                    loadedData.MainCounter = CounterFromXml(mainCounter);
 
-                    XElement dodatkowe = counter.Element("Dodatkowe");
+                    XElement additionalGroup = root.Element("AdditionalCounters");
 
-                    foreach (XElement element in dodatkowe.Elements("Licznik"))
+                    foreach (XElement element in additionalGroup.Elements("CounterItem"))
                     {
-                        Licznik licznik = LicznikZXml(element);
+                        CounterItem counter = CounterFromXml(element);
 
-                        wczytane.Dodatkowe.Add(licznik);
+                        loadedData.AdditionalCounters.Add(counter);
                     }
 
-                    dane = wczytane;
+                    appData = loadedData;
 
-                    KomunikatLabel.Text = "Wczytano z XML.";
+                    MessageLabel.Text = "Wczytano z XML.";
                 }
                 catch (Exception)
                 {
-                    KomunikatLabel.Text = "Błąd odczytu XML.";
+                    MessageLabel.Text = "Błąd odczytu XML.";
                 }
             }
 
-            StalyKolorPicker.SelectedIndexChanged -= StalyKolor_Changed;
+            MainColorPicker.SelectedIndexChanged -= MainColor_Changed;
 
-            if (dane.Staly.Kolor == "#90EE90")
+            if (appData.MainCounter.ColorCode == "#90EE90")
             {
-                StalyKolorPicker.SelectedIndex = 1;
+                MainColorPicker.SelectedIndex = 1;
             }
-            else if (dane.Staly.Kolor == "#FFFF99")
+            else if (appData.MainCounter.ColorCode == "#FFFF99")
             {
-                StalyKolorPicker.SelectedIndex = 2;
+                MainColorPicker.SelectedIndex = 2;
             }
-            else if (dane.Staly.Kolor == "#FFB6C1")
+            else if (appData.MainCounter.ColorCode == "#FFB6C1")
             {
-                StalyKolorPicker.SelectedIndex = 3;
+                MainColorPicker.SelectedIndex = 3;
             }
             else
             {
-                StalyKolorPicker.SelectedIndex = 0;
+                MainColorPicker.SelectedIndex = 0;
             }
 
-            StalyKolorPicker.SelectedIndexChanged += StalyKolor_Changed;
+            MainColorPicker.SelectedIndexChanged += MainColor_Changed;
         }
     }
 }
