@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Counter.Views.MainPage"
+             Title="Liczniki">
+    <ScrollView>
+    <VerticalStackLayout Padding="20" Spacing="15">
+
+        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+            <Label Text="Główny licznik:" VerticalOptions="Center" FontAttributes="Bold" />
+            <Button Text="-" Clicked="OnMainMinusClicked" />
+            <Label x:Name="MainValueLabel" Text="0" VerticalOptions="Center" WidthRequest="40" HorizontalTextAlignment="Center" FontAttributes="Bold" />
+            <Button Text="+" Clicked="OnMainPlusClicked" />
+            <Button Text="Reset" Clicked="OnMainResetClicked" />
+        </HorizontalStackLayout>
+
+        <BoxView HeightRequest="1" Color="Gray" />
+
+        <Entry x:Name="NameEntry" Placeholder="Nazwa nowego licznika" />
+        <Entry x:Name="StartValueEntry" Placeholder="Wartość początkowa (domyślnie 0)" Keyboard="Numeric" />
+        <Button Text="Dodaj licznik" Clicked="OnAddClicked" />
+
+        <CollectionView x:Name="CountersListView">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <HorizontalStackLayout Spacing="10" Padding="5">
+                        <Label Text="{Binding Name}" VerticalOptions="Center" WidthRequest="120" />
+                        <Button Text="-" Clicked="OnMinusClicked" />
+                        <Label Text="{Binding Value}" VerticalOptions="Center" WidthRequest="40" HorizontalTextAlignment="Center" />
+                        <Button Text="+" Clicked="OnPlusClicked" />
+                        <Button Text="Reset" Clicked="OnResetClicked" />
+                        <Button Text="X" Clicked="OnDeleteClicked" />
+                    </HorizontalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
